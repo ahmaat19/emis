@@ -113,6 +113,14 @@ const clientPermissions = [
     sort: sort.admin,
     description: 'User Profiles page',
   },
+  {
+    _id: '639096dcc21ae2f51f014d7a',
+    name: 'Client',
+    path: '/admin/clients',
+    menu: 'admin',
+    sort: sort.admin,
+    description: 'Client page',
+  },
 ]
 
 const permissions = [

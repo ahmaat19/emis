@@ -39,15 +39,6 @@ const UserProfiles = () => {
     setPage(1)
   }
 
-  // TableView
-  const table = {
-    header: ['Name', 'Address', 'Mobile', 'Email'],
-    body: ['name', 'address', 'mobile', 'user.email'],
-    createdAt: 'createdAt',
-    image: 'image',
-    data: getApi?.data,
-  }
-
   const name = 'User Profiles List'
 
   return (
@@ -55,7 +46,7 @@ const UserProfiles = () => {
       <Meta title="User Profiles" />
 
       <div className="ms-auto text-end">
-        <Pagination data={table.data} setPage={setPage} />
+        <Pagination data={getApi?.data} setPage={setPage} />
       </div>
 
       {getApi?.isLoading ? (
@@ -67,7 +58,7 @@ const UserProfiles = () => {
           <div className="d-flex align-items-center flex-column mb-2">
             <h3 className="fw-light text-muted">
               {name}
-              <sup className="fs-6"> [{table?.data?.total}] </sup>
+              <sup className="fs-6"> [{getApi?.data?.total}] </sup>
             </h3>
 
             <div className="col-auto">

@@ -15,7 +15,7 @@ export interface IClient {
 const clientSchema = new Schema<IClient>(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true, lowercase: true },
     mobile: { type: String, required: true },
     address: { type: String, required: true },
     database: { type: String, required: true, unique: true, lowercase: true },

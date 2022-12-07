@@ -13,13 +13,12 @@ import {
 } from '../../components'
 import {
   DynamicFormProps,
-  inputCheckBox,
   inputText,
   inputTextArea,
   staticInputSelect,
 } from '../../utils/dForms'
 import FormView from '../../components/FormView'
-import { FaCheckCircle, FaPenAlt, FaTimesCircle, FaTrash } from 'react-icons/fa'
+import { FaPenAlt, FaTrash } from 'react-icons/fa'
 import moment from 'moment'
 import apiHook from '../../api'
 import { IPermission } from '../../models/Permission'

@@ -136,6 +136,7 @@ handler.get(
         clientPermissions: await ClientPermission.countDocuments({}),
         roles: await Role.countDocuments({}),
         userRoles: await UserRole.countDocuments({}),
+        clients: await Client.countDocuments({}),
       })
     } catch (error: any) {
       res.status(500).json({ error: error.message })

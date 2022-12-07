@@ -127,14 +127,6 @@ const Roles = () => {
     setPage(1)
   }
 
-  // TableView
-  const table = {
-    header: ['Name', 'Type', 'Description'],
-    body: ['name', 'type', 'description'],
-    createdAt: 'createdAt',
-    data: getApi?.data,
-  }
-
   const editHandler = (item: Item) => {
     setId(item._id)
 
@@ -354,7 +346,7 @@ const Roles = () => {
       {postApi?.isError && <Message variant="danger" value={postApi?.error} />}
 
       <div className="ms-auto text-end">
-        <Pagination data={table.data} setPage={setPage} />
+        <Pagination data={getApi?.data} setPage={setPage} />
       </div>
 
       <FormView
@@ -379,7 +371,7 @@ const Roles = () => {
           <div className="d-flex align-items-center flex-column mb-2">
             <h3 className="fw-light text-muted">
               {name}
-              <sup className="fs-6"> [{table?.data?.total}] </sup>
+              <sup className="fs-6"> [{getApi?.data?.total}] </sup>
             </h3>
             <button
               className="btn btn-outline-primary btn-sm shadow my-2"

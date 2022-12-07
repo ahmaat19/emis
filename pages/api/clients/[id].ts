@@ -13,18 +13,28 @@ handler.put(
       const { Client } = (await models({ req, res })) as any
 
       const { id } = req.query
-      const { name, email, mobile, address, database, status } = req.body
+      const { name, email, mobile, address, database, status, clientCode } =
+        req.body
 
       const object = await Client.findById(id)
       if (!object)
         return res.status(400).json({ error: `${schemaNameString} not found` })
 
+      const exist = await Client.exists({
+        _id: { $ne: id },
+        database: database.toLowerCase(),
+      })
+
+      if (exist) {
+        return res.status(400).send('Database already exists')
+      }
+
       object.name = name
       object.email = email
-      object.mobile = mobile
       object.address = address
-      object.database = database
+      object.clientCode = clientCode
       object.status = status
+      object.mobile = mobile
       await object.save()
       res.status(200).json({ message: `${schemaNameString} updated` })
     } catch (error: any) {

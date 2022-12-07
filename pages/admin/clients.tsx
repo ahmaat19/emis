@@ -13,45 +13,46 @@ import {
 } from '../../components'
 import {
   DynamicFormProps,
-  inputCheckBox,
   inputEmail,
-  inputPassword,
+  inputNumber,
   inputText,
+  staticInputSelect,
 } from '../../utils/dForms'
 import FormView from '../../components/FormView'
 import { FaCheckCircle, FaPenAlt, FaTimesCircle, FaTrash } from 'react-icons/fa'
 import moment from 'moment'
 import apiHook from '../../api'
-import { IUser } from '../../models/User'
+import { IClient } from '../../models/Client'
+import { hide } from '../../utils/access'
 
-const Users = () => {
+const Clients = () => {
   const [page, setPage] = useState(1)
   const [id, setId] = useState<any>(null)
   const [edit, setEdit] = useState(false)
   const [q, setQ] = useState('')
 
   const getApi = apiHook({
-    key: ['users'],
+    key: ['clients'],
     method: 'GET',
-    url: `auth/users?page=${page}&q=${q}&limit=${25}`,
+    url: `clients?page=${page}&q=${q}&limit=${25}`,
   })?.get
 
   const postApi = apiHook({
-    key: ['users'],
+    key: ['clients'],
     method: 'POST',
-    url: `auth/users`,
+    url: `clients`,
   })?.post
 
   const updateApi = apiHook({
-    key: ['users'],
+    key: ['clients'],
     method: 'PUT',
-    url: `auth/users`,
+    url: `clients`,
   })?.put
 
   const deleteApi = apiHook({
-    key: ['users'],
+    key: ['clients'],
     method: 'DELETE',
-    url: `auth/users`,
+    url: `clients`,
   })?.deleteObj
 
   const {
@@ -85,12 +86,16 @@ const Users = () => {
     setPage(1)
   }
 
-  const editHandler = (item: IUser) => {
+  const editHandler = (item: IClient) => {
     setId(item._id)
-    setValue('blocked', item?.blocked)
-    setValue('confirmed', item?.confirmed)
+
     setValue('name', item?.name)
     setValue('email', item?.email)
+    setValue('mobile', item?.mobile)
+    setValue('address', item?.address)
+    setValue('database', item?.database)
+    setValue('status', item?.status)
+    setValue('clientCode', item?.clientCode)
 
     setEdit(true)
   }
@@ -99,9 +104,9 @@ const Users = () => {
     confirmAlert(Confirm(() => deleteApi?.mutateAsync(id)))
   }
 
-  const name = 'Users List'
-  const label = 'User'
-  const modal = 'user'
+  const name = 'Clients List'
+  const label = 'Client'
+  const modal = 'client'
 
   // FormView
   const formCleanHandler = () => {
@@ -119,7 +124,7 @@ const Users = () => {
   }
 
   const form = [
-    <div key={0} className="col-12">
+    <div key={0} className="col-lg-6 col-md-6 col-12">
       {inputText({
         register,
         errors,
@@ -128,7 +133,7 @@ const Users = () => {
         placeholder: 'Enter name',
       } as DynamicFormProps)}
     </div>,
-    <div key={1} className="col-12">
+    <div key={1} className="col-lg-6 col-md-6 col-12">
       {inputEmail({
         register,
         errors,
@@ -138,42 +143,49 @@ const Users = () => {
       } as DynamicFormProps)}
     </div>,
     <div key={2} className="col-lg-6 col-md-6 col-12">
-      {inputPassword({
+      {inputNumber({
         register,
         errors,
-        label: 'Password',
-        name: 'password',
-        placeholder: 'Enter password',
-        isRequired: false,
+        label: 'Mobile',
+        name: 'mobile',
+        placeholder: 'Enter mobile number',
       } as DynamicFormProps)}
     </div>,
     <div key={3} className="col-lg-6 col-md-6 col-12">
-      {inputPassword({
+      {inputText({
         register,
         errors,
-        label: 'Confirm Password',
-        name: 'confirmPassword',
-        placeholder: 'Enter confirm password',
-        isRequired: false,
+        label: 'Address',
+        name: 'address',
+        placeholder: 'Enter address',
       } as DynamicFormProps)}
     </div>,
-
-    <div key={4} className="col-12">
-      {inputCheckBox({
+    <div key={4} className="col-lg-6 col-md-6 col-12">
+      {inputText({
         register,
         errors,
-        label: 'Confirmed',
-        name: 'confirmed',
-        isRequired: false,
+        label: 'Client Code',
+        name: 'clientCode',
+        placeholder: 'Enter client code',
       } as DynamicFormProps)}
     </div>,
-    <div key={5} className="col-12">
-      {inputCheckBox({
+    <div key={5} className="col-lg-6 col-md-6 col-12">
+      {inputText({
         register,
         errors,
-        label: 'Blocked',
-        name: 'blocked',
-        isRequired: false,
+        label: 'Database',
+        name: 'database',
+        placeholder: 'Enter database name',
+      } as DynamicFormProps)}
+    </div>,
+    <div key={6} className="col-lg-6 col-md-6 col-12">
+      {staticInputSelect({
+        register,
+        errors,
+        label: 'Status',
+        name: 'status',
+        placeholder: 'Enter status',
+        data: [{ name: 'active' }, { name: 'disabled' }],
       } as DynamicFormProps)}
     </div>,
   ]
@@ -182,7 +194,7 @@ const Users = () => {
 
   return (
     <>
-      <Meta title="Users" />
+      <Meta title="Clients" />
 
       {deleteApi?.isSuccess && (
         <Message
@@ -259,57 +271,61 @@ const Users = () => {
               <tr>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Confirmed</th>
-                <th>Blocked</th>
+                <th>Mobile</th>
+                <th>Database</th>
+                <th>Client Code</th>
+                <th>Status</th>
                 <th>DateTime</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {getApi?.data?.data?.map((item: IUser, i: number) => (
+              {getApi?.data?.data?.map((item: IClient, i: number) => (
                 <tr key={i}>
                   <td>{item?.name}</td>
                   <td>{item?.email}</td>
+
+                  <td>{item?.mobile}</td>
+                  <td>{item?.database}</td>
+                  <td>{item?.clientCode}</td>
                   <td>
-                    {item?.confirmed ? (
+                    {item?.status === 'active' ? (
                       <FaCheckCircle className="text-success" />
                     ) : (
                       <FaTimesCircle className="text-danger" />
                     )}
                   </td>
-                  <td>
-                    {item?.blocked ? (
-                      <FaCheckCircle className="text-success" />
-                    ) : (
-                      <FaTimesCircle className="text-danger" />
-                    )}
-                  </td>
+
                   <td>{moment(item?.createdAt).format('lll')}</td>
                   <td>
-                    <div className="btn-group">
-                      <button
-                        className="btn btn-primary btn-sm rounded-pill"
-                        onClick={() => editHandler(item)}
-                        data-bs-toggle="modal"
-                        data-bs-target={`#${modal}`}
-                      >
-                        <FaPenAlt />
-                      </button>
+                    {hide(['SUPER_ADMIN']) && item?.database === 'masterdb' ? (
+                      <span className="badge bg-danger">N/A</span>
+                    ) : (
+                      <div className="btn-group">
+                        <button
+                          className="btn btn-primary btn-sm rounded-pill"
+                          onClick={() => editHandler(item)}
+                          data-bs-toggle="modal"
+                          data-bs-target={`#${modal}`}
+                        >
+                          <FaPenAlt />
+                        </button>
 
-                      <button
-                        className="btn btn-danger btn-sm ms-1 rounded-pill"
-                        onClick={() => deleteHandler(item._id)}
-                        disabled={deleteApi?.isLoading}
-                      >
-                        {deleteApi?.isLoading ? (
-                          <span className="spinner-border spinner-border-sm" />
-                        ) : (
-                          <span>
-                            <FaTrash />
-                          </span>
-                        )}
-                      </button>
-                    </div>
+                        <button
+                          className="btn btn-danger btn-sm ms-1 rounded-pill"
+                          onClick={() => deleteHandler(item._id)}
+                          disabled={deleteApi?.isLoading}
+                        >
+                          {deleteApi?.isLoading ? (
+                            <span className="spinner-border spinner-border-sm" />
+                          ) : (
+                            <span>
+                              <FaTrash />
+                            </span>
+                          )}
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -321,4 +337,4 @@ const Users = () => {
   )
 }
 
-export default dynamic(() => Promise.resolve(withAuth(Users)), { ssr: false })
+export default dynamic(() => Promise.resolve(withAuth(Clients)), { ssr: false })
