@@ -14,18 +14,20 @@ interface Props {
 const Pagination = ({ data, setPage }: Props) => {
   return data ? (
     <div className="text-end my-1">
-      <span className="btn bg-light shadow">
+      <span className="btn bg-light shadow-sm">
         {data.startIndex} - {data.endIndex} of {data.total}
       </span>
       <span
         onClick={() => setPage(data.page - 1)}
-        className={`btn bg-light shadow mx-1 ${data.page === 1 && 'disabled'}`}
+        className={`btn bg-light border-0 shadow-sm mx-1 ${
+          data.page === 1 && 'disabled'
+        }`}
       >
         <FaChevronLeft className="mb-1" />
       </span>
       <span
         onClick={() => setPage(data.page + 1)}
-        className={`btn bg-light shadow ${
+        className={`btn bg-light border-0 shadow-sm ${
           data.page === data.pages && 'disabled'
         }`}
       >

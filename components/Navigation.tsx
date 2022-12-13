@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-import { FaSignInAlt, FaPowerOff } from 'react-icons/fa'
+import { FaSignInAlt, FaPowerOff, FaBars, FaUser } from 'react-icons/fa'
 import { userInfo } from '../api/api'
 import { IClientPermission } from '../models/ClientPermission'
 
@@ -11,7 +11,7 @@ const Logout = () => {
   return typeof window !== undefined && localStorage.removeItem('userInfo')
 }
 
-const Navigation = () => {
+const Navigation = ({ toggle }: { toggle: () => void }) => {
   const logoutHandler = () => {
     Logout()
   }
@@ -87,51 +87,44 @@ const Navigation = () => {
               )
           )}
 
-          {menus()?.uniqueDropdowns?.map(
-            (item: IClientPermission, index: number) => (
-              <li key={index} className="nav-item dropdown">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  id="navbarDropdownMenuLink"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  {item?.menu === 'profile'
-                    ? userInfo()?.userInfo?.name
-                    : item?.menu.charAt(0).toUpperCase() +
-                      item?.menu.substring(1)}
-                </a>
-                <ul
-                  className="dropdown-menu border-0"
-                  aria-labelledby="navbarDropdownMenuLink"
-                >
-                  {menus() &&
-                    menus().menuItems.map(
-                      (menu: IClientPermission, index: number) =>
-                        menu.menu === item?.menu && (
-                          <li key={index}>
-                            <Link href={menu.path} className="dropdown-item">
-                              {menu.name}
-                            </Link>
-                          </li>
-                        )
-                    )}
-                </ul>
-              </li>
-            )
-          )}
-
-          <li className="nav-item">
-            <Link
-              href="/auth/login"
-              className="nav-link"
-              aria-current="page"
-              onClick={logoutHandler}
+          <li className="nav-item dropdown profile-dropdown">
+            <a
+              className="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
             >
-              <FaPowerOff className="mb-1" /> Logout
-            </Link>
+              <Image
+                src="https://github.com/ahmaat19.png"
+                alt="Ahmed"
+                className="rounded-pill me-1"
+                width={30}
+                height={30}
+              />
+              {userInfo()?.userInfo?.name}
+            </a>
+            <ul className="dropdown-menu border-0">
+              <li>
+                <Link
+                  href="/account/profile"
+                  className="dropdown-item"
+                  aria-current="page"
+                >
+                  <FaUser className="mb-1" /> {userInfo()?.userInfo?.name}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/auth/login"
+                  className="dropdown-item"
+                  aria-current="page"
+                  onClick={logoutHandler}
+                >
+                  <FaPowerOff className="mb-1" /> Logout
+                </Link>
+              </li>
+            </ul>
           </li>
         </ul>
       </>
@@ -140,11 +133,12 @@ const Navigation = () => {
 
   return (
     <nav
-      className="navbar navbar-expand-md navbar-light bg-light"
-      style={{ minHeight: 55 }}
+      className="navbar navbar-expand-md navbar-light bg-light position-fixed w-100"
+      style={{ minHeight: 55, zIndex: 1 }}
     >
-      <div className="container">
-        <Link href="/">
+      <div className="container-fluid">
+        <FaBars onClick={toggle} className="fs-5 ms-1s" />
+        {/* <Link href="/">
           <Image
             priority
             width="40"
@@ -153,7 +147,7 @@ const Navigation = () => {
             className="img-fluid brand-logos"
             alt="logo"
           />
-        </Link>
+        </Link> */}
 
         <button
           className="navbar-toggler"

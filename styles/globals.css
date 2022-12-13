@@ -1,0 +1,7 @@
+.user--image svg::after {
+  content: '22' !important;
+}
+
+.profile-dropdown .dropdown-toggle::after {
+  display: none !important;
+}
