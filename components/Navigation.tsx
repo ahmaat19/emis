@@ -72,7 +72,7 @@ const Navigation = ({ toggle }: { toggle: () => void }) => {
     return (
       <>
         <ul className="navbar-nav ms-auto">
-          {menus()?.menuItems?.map(
+          {/* {menus()?.menuItems?.map(
             (menu: IClientPermission, index: number) =>
               menu.menu === 'normal' && (
                 <li key={index} className="nav-item">
@@ -85,7 +85,7 @@ const Navigation = ({ toggle }: { toggle: () => void }) => {
                   </Link>
                 </li>
               )
-          )}
+          )} */}
 
           <li className="nav-item dropdown profile-dropdown">
             <a
@@ -138,16 +138,6 @@ const Navigation = ({ toggle }: { toggle: () => void }) => {
     >
       <div className="container-fluid">
         <FaBars onClick={toggle} className="fs-5 ms-1s" />
-        {/* <Link href="/">
-          <Image
-            priority
-            width="40"
-            height="40"
-            src="/favicon.png"
-            className="img-fluid brand-logos"
-            alt="logo"
-          />
-        </Link> */}
 
         <button
           className="navbar-toggler"

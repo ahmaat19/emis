@@ -1,7 +1,8 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { FaTachometerAlt, FaUserCog } from 'react-icons/fa'
+import { FaHome, FaUserCog } from 'react-icons/fa'
 import { userInfo } from '../api/api'
 import { IClientPermission } from '../models/ClientPermission'
 
@@ -62,6 +63,13 @@ const SideBar = () => {
         return (
           <span className="text-muted">
             <FaUserCog className="fs-5 mb-1" />{' '}
+            {menu.charAt(0).toUpperCase() + menu.substring(1)}
+          </span>
+        )
+      case 'Home':
+        return (
+          <span className="text-muted">
+            <FaHome className="fs-5 mb-1" />{' '}
             {menu.charAt(0).toUpperCase() + menu.substring(1)}
           </span>
         )
@@ -130,14 +138,25 @@ const SideBar = () => {
         top: 55,
       }}
     >
-      {/* <h1>Hel</h1> */}
-      <ul className="nav flex-column">
-        <li className="nav-item">
-          <Link href="/" className="nav-link text-muted">
-            <FaTachometerAlt className="fs-5 mb-1" /> Home
+      <div className="p-3" style={{ maxWidth: 220 }}>
+        <div className="rounded-pill p-3 shadow text-center w-50 mx-auto">
+          <Link href="/">
+            <Image
+              priority
+              width={80}
+              height={80}
+              src="/favicon.png"
+              className="img-fluid"
+              alt="logo"
+            />
           </Link>
-        </li>
-      </ul>
+        </div>
+        <h1 className="text-wrap text-center fs-6 fw-bold text-uppercase my-1 font-monospace text-primary">
+          Education Management Information System (EMIS)
+        </h1>
+        <hr />
+      </div>
+
       {show && authItems()}
     </div>
   )
