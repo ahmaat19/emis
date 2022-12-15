@@ -1,80 +1,144 @@
-import React from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
+import { FaTachometerAlt, FaUserCog } from 'react-icons/fa'
+import { userInfo } from '../api/api'
+import { IClientPermission } from '../models/ClientPermission'
 
 const SideBar = () => {
-  const items = [
-    {
-      _id: '1',
-      name: 'Admin',
-      subItems: [
-        {
-          _id: '1',
-          name: 'Users',
-        },
-        {
-          _id: '2',
-          name: 'Roles',
-        },
-        {
-          _id: '3',
-          name: 'Permissions',
-        },
-        {
-          _id: '4',
-          name: 'Client Permissions',
-        },
-        {
-          _id: '5',
-          name: 'User Roles',
-        },
-        {
-          _id: '6',
-          name: 'User Profiles',
-        },
-      ],
-    },
-    {
-      _id: '2',
-      name: 'Ahmed Ibrahim',
-      subItems: [
-        {
-          _id: '1',
-          name: 'Profile',
-        },
-      ],
-    },
-  ]
+  const [show, setShow] = useState(null)
+  const router = useRouter()
+
+  useEffect(() => {
+    typeof document !== 'undefined' && setShow(userInfo().userInfo)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router])
+
+  const menus = () => {
+    let dropdownItems = userInfo()?.userInfo?.routes?.map(
+      (route: IClientPermission) => ({
+        menu: route.menu,
+        sort: route.sort,
+      })
+    )
+    dropdownItems = dropdownItems?.filter(
+      (item: IClientPermission) => item?.menu !== 'profile'
+    )
+
+    const menuItems = userInfo()?.userInfo?.routes?.map(
+      (route: IClientPermission) => route
+    )
+
+    const dropdownArray = dropdownItems?.filter(
+      (item: IClientPermission) =>
+        item?.menu !== 'hidden' && item?.menu !== 'normal'
+    )
+
+    const uniqueDropdowns = dropdownArray?.reduce((a: any[], b: any) => {
+      const i = a.findIndex((x: IClientPermission) => x.menu === b.menu)
+      return (
+        i === -1 ? a.push({ menu: b.menu, ...b, times: 1 }) : a[i].times++, a
+      )
+    }, [])
+
+    return {
+      uniqueDropdowns: uniqueDropdowns?.sort(
+        (a: { sort: number }, b: { sort: number }) => b?.sort - a?.sort
+      ),
+      menuItems: menuItems?.sort(
+        (a: { sort: number }, b: { sort: number }) => b?.sort - a?.sort
+      ),
+    }
+  }
+
+  useEffect(() => {
+    menus()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const menuIcon = (menu: string) => {
+    switch (menu) {
+      case 'admin':
+        return (
+          <span className="text-muted">
+            <FaUserCog className="fs-5 mb-1" />{' '}
+            {menu.charAt(0).toUpperCase() + menu.substring(1)}
+          </span>
+        )
+
+      default:
+        return menu.charAt(0).toUpperCase() + menu.substring(1)
+    }
+  }
+
+  const authItems = () => {
+    return (
+      <ul className="nav flex-column">
+        {menus()?.menuItems?.map(
+          (menu: IClientPermission, index: number) =>
+            menu.menu === 'normal' && (
+              <li key={index} className="nav-item">
+                <Link href={menu.path} className="nav-link" aria-current="page">
+                  {/* {menu.name} */}
+                  {menuIcon(menu?.name)}
+                </Link>
+              </li>
+            )
+        )}
+
+        {menus()?.uniqueDropdowns?.map(
+          (item: IClientPermission, index: number) => (
+            <li key={index} className="nav-item dropdown">
+              <a
+                className="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdownMenuLink"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                {menuIcon(item?.menu)}
+              </a>
+              <ul
+                className="dropdown-menu border-0"
+                aria-labelledby="navbarDropdownMenuLink"
+              >
+                {menus() &&
+                  menus().menuItems.map(
+                    (menu: IClientPermission, index: number) =>
+                      menu.menu === item?.menu && (
+                        <li key={index}>
+                          <Link href={menu.path} className="dropdown-item">
+                            {menu.name}
+                          </Link>
+                        </li>
+                      )
+                  )}
+              </ul>
+            </li>
+          )
+        )}
+      </ul>
+    )
+  }
+
   return (
     <div
-      className="bg-light"
-      style={{ minWidth: 250, minHeight: 'calc(100vh - 120px)' }}
+      className="bg-white  position-fixed h-100"
+      style={{
+        minWidth: 220,
+        top: 55,
+      }}
     >
-      <div className="container pt-2">
-        <ul className="navbar-nav">
-          <div>
-            {items?.map((item) => (
-              <>
-                <div key={item?._id} className="mb-3">
-                  <label htmlFor="label" className="">
-                    {item?.name}
-                  </label>
-                  {item?.subItems?.map((sub) => (
-                    <div key={sub?._id} className="ms-2s">
-                      <Link
-                        className="nav-link active py-1 text-muted"
-                        aria-current="page"
-                        href="#"
-                      >
-                        {sub?.name}
-                      </Link>
-                    </div>
-                  ))}
-                </div>
-              </>
-            ))}
-          </div>
-        </ul>
-      </div>
+      {/* <h1>Hel</h1> */}
+      <ul className="nav flex-column">
+        <li className="nav-item">
+          <Link href="/" className="nav-link text-muted">
+            <FaTachometerAlt className="fs-5 mb-1" /> Home
+          </Link>
+        </li>
+      </ul>
+      {show && authItems()}
     </div>
   )
 }
