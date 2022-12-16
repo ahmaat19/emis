@@ -34,6 +34,15 @@ const clients = {
   clientCode: 615301507,
 }
 
+const organization = {
+  _id: '639b19eaf695de3b46047798',
+  name: '',
+  image: '',
+  address: '',
+  mobile: '',
+  details: '',
+}
+
 const profile = {
   _id: '5063114bd386d8fadbd6b00b',
   mobile: 252615301507,
@@ -120,6 +129,14 @@ const clientPermissions = [
     menu: 'admin',
     sort: sort.admin,
     description: 'Client page',
+  },
+  {
+    _id: '639b1bfea398f1e9b6097590',
+    name: 'Organization',
+    path: '/admin/organization',
+    menu: 'admin',
+    sort: sort.admin,
+    description: 'Organization page',
   },
 ]
 
@@ -333,6 +350,29 @@ const permissions = [
     name: 'Client',
     method: 'DELETE',
   },
+  //   Organization
+  {
+    _id: '639b175ef695de3b46047776',
+    description: 'Organization',
+    route: '/api/organization',
+    name: 'Organization',
+    method: 'GET',
+  },
+  {
+    _id: '639b175ef695de3b46047777',
+    description: 'Organization',
+    route: '/api/organization/:id',
+    name: 'Organization',
+    method: 'PUT',
+  },
 ]
 
-export { roles, users, profile, permissions, clientPermissions, clients }
+export {
+  roles,
+  users,
+  profile,
+  permissions,
+  clientPermissions,
+  clients,
+  organization,
+}

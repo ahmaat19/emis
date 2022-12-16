@@ -1,6 +1,7 @@
 import db from '../config/db'
 import clientSchema, { IClient } from './Client'
 import clientPermissionSchema, { IClientPermission } from './ClientPermission'
+import organizationSchema, { IOrganization } from './Organization'
 import permissionSchema, { IPermission } from './Permission'
 import profileSchema, { IProfile } from './Profile'
 import roleSchema, { IRole } from './Role'
@@ -28,6 +29,7 @@ interface ModelProps {
   ClientPermission: IClientPermission
   Profile: IProfile
   Client: IClient
+  Organization: IOrganization
 }
 
 export const models = async ({ req, res, dbCode }: Props) => {
@@ -46,6 +48,7 @@ export const models = async ({ req, res, dbCode }: Props) => {
   const Permission = await conn.model('Permission', permissionSchema)
   const Profile = await conn.model('Profile', profileSchema)
   const Client = await conn.model('Client', clientSchema)
+  const Organization = await conn.model('Organization', organizationSchema)
 
   return {
     User,
@@ -55,5 +58,6 @@ export const models = async ({ req, res, dbCode }: Props) => {
     ClientPermission,
     Profile,
     Client,
+    Organization,
   } as ModelProps
 }

@@ -9,6 +9,7 @@ import {
   permissions,
   clientPermissions,
   clients,
+  organization,
 } from '../../../../config/data'
 import userSchema from '../../../../models/User'
 import profileSchema from '../../../../models/Profile'
@@ -17,6 +18,7 @@ import userRoleSchema from '../../../../models/UserRole'
 import roleSchema from '../../../../models/Role'
 import clientPermissionSchema from '../../../../models/ClientPermission'
 import clientSchema from '../../../../models/Client'
+import organizationSchema from '../../../../models/Organization'
 
 const handler = nc()
 
@@ -34,6 +36,7 @@ handler.get(
       clientPermissionSchema
     )
     const Client = await conn.model('Client', clientSchema)
+    const Organization = await conn.model('Organization', organizationSchema)
 
     try {
       const { secret } = req.query
@@ -49,6 +52,7 @@ handler.get(
       await UserRole.deleteMany({})
       await ClientPermission.deleteMany({})
       await Client.deleteMany({})
+      await Organization.deleteMany({})
 
       const clientObject = await Client.create(clients)
 
@@ -114,6 +118,8 @@ handler.get(
         role: roles[0]._id,
       })
 
+      await Organization.create(organization)
+
       // Find super admin role
       const superAdminRole = roleObjects.find((r) => r.type === 'SUPER_ADMIN')
 
@@ -137,6 +143,7 @@ handler.get(
         roles: await Role.countDocuments({}),
         userRoles: await UserRole.countDocuments({}),
         clients: await Client.countDocuments({}),
+        organization: await Organization.countDocuments({}),
       })
     } catch (error: any) {
       res.status(500).json({ error: error.message })

@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form'
 import {
   DynamicFormProps,
   inputFile,
-  inputPassword,
   inputTel,
   inputText,
   inputTextArea,
@@ -14,32 +13,32 @@ import {
 import Image from 'next/image'
 import { Spinner } from '../../components'
 import apiHook from '../../api'
-import { IProfile } from '../../models/Profile'
+import { IOrganization } from '../../models/Organization'
 
-interface IProfileFormValueProps extends Omit<IProfile, '_id' | 'user'> {
+interface IOrganizationFormValueProps
+  extends Omit<IOrganization, '_id' | 'user'> {
   password?: string
 }
 
-const Profile = () => {
+const Organization = () => {
   const [file, setFile] = useState(null)
   const [fileLink, setFileLink] = useState(null)
   const {
     register,
     handleSubmit,
-    watch,
     setValue,
     formState: { errors },
   } = useForm()
 
   const getApi = apiHook({
-    key: ['profiles'],
+    key: ['organization'],
     method: 'GET',
-    url: `auth/profile`,
+    url: `organization`,
   })?.get
   const updateApi = apiHook({
-    key: ['profiles'],
+    key: ['organization'],
     method: 'PUT',
-    url: `auth/profile`,
+    url: `organization`,
   })?.put
   const uploadApi = apiHook({
     key: ['upload'],
@@ -58,24 +57,23 @@ const Profile = () => {
     setValue('name', !getApi?.isLoading ? getApi?.data?.name : '')
     setValue('address', !getApi?.isLoading ? getApi?.data?.address : '')
     setValue('mobile', !getApi?.isLoading ? getApi?.data?.mobile : '')
-    setValue('bio', !getApi?.isLoading ? getApi?.data?.bio : '')
+    setValue('details', !getApi?.isLoading ? getApi?.data?.details : '')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getApi?.isLoading, setValue])
 
-  const submitHandler = (data: IProfileFormValueProps) => {
+  const submitHandler = (data: IOrganizationFormValueProps) => {
     if (!file && !fileLink) {
       updateApi?.mutateAsync({
-        _id: getApi?.data?.user?._id,
+        _id: getApi?.data?._id,
         name: data?.name,
         address: data?.address,
         mobile: data?.mobile,
-        bio: data?.bio,
-        password: data?.password,
+        details: data?.details,
       })
     } else {
       updateApi?.mutateAsync({
         ...data,
-        _id: getApi?.data?.user?._id,
+        _id: getApi?.data?._id,
         image: fileLink,
       })
     }
@@ -99,8 +97,10 @@ const Profile = () => {
 
   return (
     <FormContainer>
-      <Meta title="Profile" />
-      <h3 className="fw-light font-monospace text-center">User Profile</h3>
+      <Meta title="Organization" />
+      <h3 className="fw-light font-monospace text-center">
+        Organization Details
+      </h3>
 
       {updateApi?.isError && (
         <Message variant="danger" value={updateApi?.error} />
@@ -111,7 +111,10 @@ const Profile = () => {
       )}
       {getApi?.isError && <Message variant="danger" value={getApi?.error} />}
       {updateApi?.isSuccess && (
-        <Message variant="success" value="User has been updated successfully" />
+        <Message
+          variant="success"
+          value="Details has been updated successfully"
+        />
       )}
 
       {getApi?.isLoading && <Spinner />}
@@ -121,8 +124,8 @@ const Profile = () => {
             <Image
               src={getApi?.data?.image}
               alt="avatar"
-              width={100}
-              height={100}
+              width="100"
+              height="100"
               style={{ objectFit: 'cover' }}
               className="rounded-pill"
             />
@@ -161,9 +164,9 @@ const Profile = () => {
             {inputTextArea({
               register,
               errors,
-              label: 'Bio',
-              name: 'bio',
-              placeholder: 'Tell us about yourself',
+              label: 'Details',
+              name: 'details',
+              placeholder: 'Tell us about your organization',
             } as DynamicFormProps)}
           </div>
 
@@ -176,30 +179,6 @@ const Profile = () => {
               setFile,
               isRequired: false,
               placeholder: 'Choose an image',
-            } as DynamicFormProps)}
-          </div>
-          <div className="col-md-6 col-12">
-            {inputPassword({
-              register,
-              errors,
-              label: 'Password',
-              name: 'password',
-              minLength: true,
-              isRequired: false,
-              placeholder: "Leave blank if you don't want to change",
-            } as DynamicFormProps)}
-          </div>
-          <div className="col-md-6 col-12">
-            {inputPassword({
-              register,
-              errors,
-              watch,
-              name: 'confirmPassword',
-              label: 'Confirm Password',
-              validate: true,
-              minLength: true,
-              isRequired: false,
-              placeholder: 'Confirm Password',
             } as DynamicFormProps)}
           </div>
         </div>
@@ -220,4 +199,6 @@ const Profile = () => {
   )
 }
 
-export default dynamic(() => Promise.resolve(withAuth(Profile)), { ssr: false })
+export default dynamic(() => Promise.resolve(withAuth(Organization)), {
+  ssr: false,
+})

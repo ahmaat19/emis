@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { FaHome, FaUserCog } from 'react-icons/fa'
+import apiHook from '../api'
 import { userInfo } from '../api/api'
 import { IClientPermission } from '../models/ClientPermission'
 
@@ -56,6 +57,12 @@ const SideBar = () => {
     menus()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const getApi = apiHook({
+    key: ['organization'],
+    method: 'GET',
+    url: `organization`,
+  })?.get
 
   const menuIcon = (menu: string) => {
     switch (menu) {
@@ -139,20 +146,34 @@ const SideBar = () => {
       }}
     >
       <div className="p-3" style={{ maxWidth: 220 }}>
-        <div className="rounded-pill p-3 shadow text-center w-50 mx-auto">
+        <div className="rounded-pill text-center">
           <Link href="/">
-            <Image
-              priority
-              width={80}
-              height={80}
-              src="/favicon.png"
-              className="img-fluid"
-              alt="logo"
-            />
+            {getApi?.data?.image ? (
+              <Image
+                priority
+                width={80}
+                height={80}
+                src={getApi?.data?.image}
+                className="img-fluid"
+                alt="logo"
+                style={{ objectFit: 'cover' }}
+              />
+            ) : (
+              <Image
+                priority
+                width={80}
+                height={80}
+                src="/favicon.png"
+                className="img-fluid"
+                style={{ objectFit: 'cover' }}
+                alt="logo"
+              />
+            )}
           </Link>
         </div>
         <h1 className="text-wrap text-center fs-6 fw-bold text-uppercase my-1 font-monospace text-primary">
-          Education Management Information System (EMIS)
+          {getApi?.data?.name?.slice(0, 50) ||
+            `Education Management Information System (EMIS)`}
         </h1>
         <hr />
       </div>
