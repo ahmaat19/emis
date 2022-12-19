@@ -61,7 +61,7 @@ handler.post(
       })
 
       if (exist) {
-        return res.status(400).send('Database already exists')
+        return res.status(400).json({ error: 'Database already exists' })
       }
       const object = await Client.create({
         name,

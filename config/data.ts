@@ -350,6 +350,13 @@ const permissions = [
     name: 'Client',
     method: 'DELETE',
   },
+  {
+    _id: '637e01fbfadbdf64bba855f8',
+    description: 'Client Seed Data',
+    route: '/api/clients/seed',
+    name: 'Client',
+    method: 'POST',
+  },
   //   Organization
   {
     _id: '639b175ef695de3b46047776',

@@ -19,7 +19,13 @@ import {
   staticInputSelect,
 } from '../../utils/dForms'
 import FormView from '../../components/FormView'
-import { FaCheckCircle, FaPenAlt, FaTimesCircle, FaTrash } from 'react-icons/fa'
+import {
+  FaCheckCircle,
+  FaPenAlt,
+  FaTimesCircle,
+  FaTrash,
+  FaTrashRestoreAlt,
+} from 'react-icons/fa'
 import moment from 'moment'
 import apiHook from '../../api'
 import { IClient } from '../../models/Client'
@@ -36,6 +42,12 @@ const Clients = () => {
     method: 'GET',
     url: `clients?page=${page}&q=${q}&limit=${25}`,
   })?.get
+
+  const seedApi = apiHook({
+    key: ['clients'],
+    method: 'POST',
+    url: `clients/seed`,
+  })?.post
 
   const postApi = apiHook({
     key: ['clients'],
@@ -192,6 +204,10 @@ const Clients = () => {
 
   const modalSize = 'modal-lg'
 
+  const seedHandler = (item: IClient) => {
+    seedApi?.mutateAsync(item)
+  }
+
   return (
     <>
       <Meta title="Clients" />
@@ -221,6 +237,14 @@ const Clients = () => {
         />
       )}
       {postApi?.isError && <Message variant="danger" value={postApi?.error} />}
+
+      {seedApi?.isSuccess && (
+        <Message
+          variant="success"
+          value={`${label} has been Created successfully.`}
+        />
+      )}
+      {seedApi?.isError && <Message variant="danger" value={seedApi?.error} />}
 
       <div className="ms-auto text-end">
         <Pagination data={getApi?.data} setPage={setPage} />
@@ -259,7 +283,7 @@ const Clients = () => {
             </button>
             <div className="col-auto">
               <Search
-                placeholder="Search by email"
+                placeholder="Search by name"
                 setQ={setQ}
                 q={q}
                 searchHandler={searchHandler}
@@ -298,34 +322,48 @@ const Clients = () => {
 
                   <td>{moment(item?.createdAt).format('lll')}</td>
                   <td>
-                    {hide(['SUPER_ADMIN']) && item?.database === 'masterdb' ? (
+                    {/* {hide(['SUPER_ADMIN']) && item?.database === 'masterdb' ? (
                       <span className="badge bg-danger">N/A</span>
-                    ) : (
-                      <div className="btn-group">
-                        <button
-                          className="btn btn-primary btn-sm rounded-pill"
-                          onClick={() => editHandler(item)}
-                          data-bs-toggle="modal"
-                          data-bs-target={`#${modal}`}
-                        >
-                          <FaPenAlt />
-                        </button>
+                    ) : ( */}
+                    <div className="btn-group">
+                      <button
+                        className="btn btn-primary btn-sm rounded-pill"
+                        onClick={() => editHandler(item)}
+                        data-bs-toggle="modal"
+                        data-bs-target={`#${modal}`}
+                      >
+                        <FaPenAlt />
+                      </button>
 
-                        <button
-                          className="btn btn-danger btn-sm ms-1 rounded-pill"
-                          onClick={() => deleteHandler(item._id)}
-                          disabled={deleteApi?.isLoading}
-                        >
-                          {deleteApi?.isLoading ? (
-                            <span className="spinner-border spinner-border-sm" />
-                          ) : (
-                            <span>
-                              <FaTrash />
-                            </span>
-                          )}
-                        </button>
-                      </div>
-                    )}
+                      <button
+                        className="btn btn-warning btn-sm rounded-pill mx-1"
+                        onClick={() => seedHandler(item)}
+                        disabled={seedApi?.isLoading}
+                      >
+                        {seedApi?.isLoading ? (
+                          <span className="spinner-border spinner-border-sm" />
+                        ) : (
+                          <span>
+                            <FaTrashRestoreAlt />
+                          </span>
+                        )}
+                      </button>
+
+                      <button
+                        className="btn btn-danger btn-sm rounded-pill"
+                        onClick={() => deleteHandler(item._id)}
+                        disabled={deleteApi?.isLoading}
+                      >
+                        {deleteApi?.isLoading ? (
+                          <span className="spinner-border spinner-border-sm" />
+                        ) : (
+                          <span>
+                            <FaTrash />
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                    {/* )} */}
                   </td>
                 </tr>
               ))}

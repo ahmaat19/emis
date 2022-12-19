@@ -10,7 +10,7 @@ handler.get(
 
       const q = req.query && req.query.q
 
-      const role = q ? await Role.findOne({ name: q }) : null
+      const role = q ? await Role.findOne({ name: q }, { _id: 1 }) : null
 
       let query = UserRole.find(role ? { role: role._id } : {})
 

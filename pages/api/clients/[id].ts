@@ -20,6 +20,11 @@ handler.put(
       if (!object)
         return res.status(400).json({ error: `${schemaNameString} not found` })
 
+      if (object.database === 'masterdb')
+        return res
+          .status(400)
+          .json({ error: 'You can not update master database' })
+
       const exist = await Client.exists({
         _id: { $ne: id },
         database: database.toLowerCase(),
@@ -52,6 +57,11 @@ handler.delete(
       const object = await Client.findById(id)
       if (!object)
         return res.status(400).json({ error: `${schemaNameString} not found` })
+
+      if (object.database === 'masterdb')
+        return res
+          .status(400)
+          .json({ error: 'You can not delete master database' })
 
       await object.remove()
       res.status(200).json({ message: `${schemaNameString} removed` })

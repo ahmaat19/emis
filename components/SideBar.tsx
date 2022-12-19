@@ -151,20 +151,20 @@ const SideBar = () => {
             {getApi?.data?.image ? (
               <Image
                 priority
-                width={80}
-                height={80}
+                width={100}
+                height={100}
                 src={getApi?.data?.image}
-                className="img-fluid"
+                className="img-fluid rounded-pill shadow p-3 border border-primary"
                 alt="logo"
                 style={{ objectFit: 'cover' }}
               />
             ) : (
               <Image
                 priority
-                width={80}
-                height={80}
+                width={100}
+                height={100}
                 src="/favicon.png"
-                className="img-fluid"
+                className="img-fluid rounded-pill shadow p-3 border border-primary"
                 style={{ objectFit: 'cover' }}
                 alt="logo"
               />

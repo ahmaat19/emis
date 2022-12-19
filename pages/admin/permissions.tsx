@@ -56,7 +56,6 @@ const Permissions = () => {
   const {
     register,
     handleSubmit,
-    watch,
     setValue,
     reset,
     formState: { errors },
@@ -89,7 +88,6 @@ const Permissions = () => {
   const editHandler = (item: IPermission) => {
     setId(item._id)
     setValue('name', item?.name)
-    setValue('auth', item?.auth)
     setValue('description', item?.description)
     setValue('route', item?.route)
     setValue('method', item?.method)

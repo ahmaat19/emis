@@ -226,7 +226,7 @@ const UserRoles = () => {
             </button>
             <div className="col-auto">
               <Search
-                placeholder="Search by name"
+                placeholder="Search by role name"
                 setQ={setQ}
                 q={q}
                 searchHandler={searchHandler}
