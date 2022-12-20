@@ -96,7 +96,7 @@ const OrganizationComponent = () => {
   return (
     <FormContainer>
       <Meta title="Organization" />
-      <h3 className="fw-light font-monospace text-center">
+      <h3 className="fw-light font-monospace text-center text-info">
         Organization Details
       </h3>
 

@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { FaHome, FaUserCog } from 'react-icons/fa'
+import { FaCogs, FaHome, FaUserCog } from 'react-icons/fa'
 import apiHook from '../api'
 import { userInfo } from '../api/api'
 import { IClientPermission } from '../models/ClientPermission'
@@ -70,6 +70,13 @@ const SideBar = () => {
         return (
           <span className="text-muted">
             <FaUserCog className="fs-5 mb-1" />{' '}
+            {menu.charAt(0).toUpperCase() + menu.substring(1)}
+          </span>
+        )
+      case 'setting':
+        return (
+          <span className="text-muted">
+            <FaCogs className="fs-5 mb-1" />{' '}
             {menu.charAt(0).toUpperCase() + menu.substring(1)}
           </span>
         )

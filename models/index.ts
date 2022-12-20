@@ -1,4 +1,6 @@
 import db from '../config/db'
+import accountSchema, { IAccount } from './Account'
+import accountTypeSchema, { IAccountType } from './AccountType'
 import clientSchema, { IClient } from './Client'
 import clientPermissionSchema, { IClientPermission } from './ClientPermission'
 import organizationSchema, { IOrganization } from './Organization'
@@ -30,6 +32,8 @@ interface ModelProps {
   Profile: IProfile
   Client: IClient
   Organization: IOrganization
+  AccountType: IAccountType
+  Account: IAccount
 }
 
 export const models = async ({ req, res, dbCode }: Props) => {
@@ -49,6 +53,8 @@ export const models = async ({ req, res, dbCode }: Props) => {
   const Profile = await conn.model('Profile', profileSchema)
   const Client = await conn.model('Client', clientSchema)
   const Organization = await conn.model('Organization', organizationSchema)
+  const AccountType = await conn.model('AccountType', accountTypeSchema)
+  const Account = await conn.model('Account', accountSchema)
 
   return {
     User,
@@ -59,5 +65,7 @@ export const models = async ({ req, res, dbCode }: Props) => {
     Profile,
     Client,
     Organization,
+    AccountType,
+    Account,
   } as ModelProps
 }

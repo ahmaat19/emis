@@ -28,18 +28,16 @@ handler.post(
           dbCode: clientCode,
         })) as any
 
-        await Permission.deleteMany({})
-        await ClientPermission.deleteMany({})
+        Promise.all([
+          await Permission.deleteMany({}),
+          await ClientPermission.deleteMany({}),
 
-        permissions?.map(async (obj) => await Permission.create(obj))
-
-        clientPermissions?.map(
-          async (obj) => await ClientPermission.create(obj)
-        )
+          await Permission.insertMany(permissions),
+          await ClientPermission.insertMany(clientPermissions),
+        ])
 
         return res.status(200).send('Database restored successfully')
       }
-
       // seed data
       const { Permission, ClientPermission } = (await models({
         req,

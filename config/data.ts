@@ -55,6 +55,7 @@ const sort = {
   hidden: 0,
   profile: 1,
   admin: 2,
+  setting: 3,
 }
 
 const clientPermissions = [
@@ -137,6 +138,22 @@ const clientPermissions = [
     menu: 'admin',
     sort: sort.admin,
     description: 'Organization page',
+  },
+  {
+    _id: '63a1b4aebfa6707d880d07b1',
+    name: 'Account Type',
+    path: '/setting/account-types',
+    menu: 'setting',
+    sort: sort.setting,
+    description: 'Account types page',
+  },
+  {
+    _id: '63a1b4aebfa6707d880d07b0',
+    name: 'Account',
+    path: '/setting/accounts',
+    menu: 'setting',
+    sort: sort.setting,
+    description: 'Account page',
   },
 ]
 
@@ -371,6 +388,66 @@ const permissions = [
     route: '/api/organization/:id',
     name: 'Organization',
     method: 'PUT',
+  },
+
+  //   Account Type
+  {
+    _id: '63a1b180bfa6707d880d07a8',
+    description: 'Account Types',
+    route: '/api/setting/account-types',
+    name: 'Account Types',
+    method: 'GET',
+  },
+  {
+    _id: '63a1b180bfa6707d880d07a9',
+    description: 'Account Type',
+    route: '/api/setting/account-types',
+    name: 'Account Types',
+    method: 'POST',
+  },
+  {
+    _id: '63a1b180bfa6707d880d07aa',
+    description: 'Account Type',
+    route: '/api/setting/account-types/:id',
+    name: 'Account Types',
+    method: 'PUT',
+  },
+  {
+    _id: '63a1b180bfa6707d880d07ab',
+    description: 'Account Type',
+    route: '/api/setting/account-types/:id',
+    name: 'Account Types',
+    method: 'DELETE',
+  },
+
+  //   Account
+  {
+    _id: '63a1b180bfa6707d880d07ac',
+    description: 'Accounts',
+    route: '/api/setting/accounts',
+    name: 'Accounts',
+    method: 'GET',
+  },
+  {
+    _id: '63a1b180bfa6707d880d07ad',
+    description: 'Account ',
+    route: '/api/setting/accounts',
+    name: 'Accounts',
+    method: 'POST',
+  },
+  {
+    _id: '63a1b180bfa6707d880d07ae',
+    description: 'Account ',
+    route: '/api/setting/accounts/:id',
+    name: 'Accounts',
+    method: 'PUT',
+  },
+  {
+    _id: '63a1b180bfa6707d880d07af',
+    description: 'Account ',
+    route: '/api/setting/accounts/:id',
+    name: 'Accounts',
+    method: 'DELETE',
   },
 ]
 
