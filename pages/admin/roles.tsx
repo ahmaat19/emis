@@ -64,13 +64,13 @@ const Roles = () => {
   const getClientPermissionsApi = apiHook({
     key: ['client-permissions'],
     method: 'GET',
-    url: `auth/client-permissions?page=${page}&q=${q}&limit=${25}`,
+    url: `auth/client-permissions?page=${page}&q=${q}&limit=${250}`,
   })?.get
 
   const getPermissionsApi = apiHook({
     key: ['permissions'],
     method: 'GET',
-    url: `auth/permissions?page=${page}&q=${q}&limit=${25}`,
+    url: `auth/permissions?page=${page}&q=${q}&limit=${250}`,
   })?.get
 
   const {
@@ -107,6 +107,7 @@ const Roles = () => {
     if (postApi?.isSuccess || updateApi?.isSuccess || deleteApi?.isSuccess) {
       formCleanHandler()
       getApi?.refetch()
+      document.getElementById('dismissModal')?.click()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postApi?.isSuccess, updateApi?.isSuccess, deleteApi?.isSuccess])
@@ -313,7 +314,7 @@ const Roles = () => {
     </div>,
   ]
 
-  const modalSize = 'modal-lg'
+  const modalSize = 'modal-md'
 
   return (
     <>

@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic'
 import withAuth from '../../HoC/withAuth'
 import { Meta } from '../../components'
 import OrganizationComponent from '../../components/organization/Organization'
+import Transactions from '../../components/organization/Transactions'
 
 const Organization = () => {
   const navItems = ['Organization', 'Transactions']
@@ -48,7 +49,7 @@ const Organization = () => {
           aria-labelledby="nav-Transactions-tab"
           tabIndex={0}
         >
-          Transactions
+          <Transactions />
         </div>
       </div>
     </div>

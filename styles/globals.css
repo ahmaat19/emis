@@ -5,3 +5,9 @@
 .profile-dropdown .dropdown-toggle::after {
   display: none !important;
 }
+.profile-dropdown .dropdown-toggle::before {
+  display: none !important;
+}
+.sidebar-dropdown-menu {
+  transform: translate3d(120px, -1px, 0px) !important;
+}

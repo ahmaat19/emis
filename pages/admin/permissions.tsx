@@ -65,6 +65,8 @@ const Permissions = () => {
     if (postApi?.isSuccess || updateApi?.isSuccess || deleteApi?.isSuccess) {
       formCleanHandler()
       getApi?.refetch()
+
+      document.getElementById('dismissModal')?.click()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postApi?.isSuccess, updateApi?.isSuccess, deleteApi?.isSuccess])
@@ -163,7 +165,7 @@ const Permissions = () => {
     </div>,
   ]
 
-  const modalSize = 'modal-lg'
+  const modalSize = 'modal-md'
 
   return (
     <>

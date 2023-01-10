@@ -1,12 +1,19 @@
 import db from '../config/db'
 import accountSchema, { IAccount } from './Account'
 import accountTypeSchema, { IAccountType } from './AccountType'
+import categorySchema, { ICategory } from './Category'
 import clientSchema, { IClient } from './Client'
 import clientPermissionSchema, { IClientPermission } from './ClientPermission'
+import customerSchema, { ICustomer } from './Customer'
+import employeeSchema, { IEmployee } from './Employee'
+import labelSchema, { ILabel } from './Label'
 import organizationSchema, { IOrganization } from './Organization'
 import permissionSchema, { IPermission } from './Permission'
+import productTypeSchema, { IProductType } from './ProductType'
 import profileSchema, { IProfile } from './Profile'
 import roleSchema, { IRole } from './Role'
+import supplierSchema, { ISupplier } from './Supplier'
+import unitSchema, { IUnit } from './Unit'
 import userSchema, { IUser } from './User'
 import userRoleSchema, { IUserRole } from './UserRole'
 
@@ -34,6 +41,13 @@ interface ModelProps {
   Organization: IOrganization
   AccountType: IAccountType
   Account: IAccount
+  Employee: IEmployee
+  Supplier: ISupplier
+  Customer: ICustomer
+  Label: ILabel
+  ProductType: IProductType
+  Category: ICategory
+  Unit: IUnit
 }
 
 export const models = async ({ req, res, dbCode }: Props) => {
@@ -55,6 +69,13 @@ export const models = async ({ req, res, dbCode }: Props) => {
   const Organization = await conn.model('Organization', organizationSchema)
   const AccountType = await conn.model('AccountType', accountTypeSchema)
   const Account = await conn.model('Account', accountSchema)
+  const Employee = await conn.model('Employee', employeeSchema)
+  const Supplier = await conn.model('Supplier', supplierSchema)
+  const Customer = await conn.model('Customer', customerSchema)
+  const Label = await conn.model('Label', labelSchema)
+  const ProductType = await conn.model('ProductType', productTypeSchema)
+  const Category = await conn.model('Category', categorySchema)
+  const Unit = await conn.model('Unit', unitSchema)
 
   return {
     User,
@@ -67,5 +88,12 @@ export const models = async ({ req, res, dbCode }: Props) => {
     Organization,
     AccountType,
     Account,
+    Employee,
+    Supplier,
+    Customer,
+    Label,
+    ProductType,
+    Category,
+    Unit,
   } as ModelProps
 }

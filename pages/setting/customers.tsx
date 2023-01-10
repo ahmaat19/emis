@@ -14,20 +14,45 @@ import {
 import {
   DynamicFormProps,
   inputNumber,
+  inputTel,
   inputText,
-  inputTextArea,
+  staticInputSelect,
 } from '../../utils/dForms'
 import FormView from '../../components/FormView'
-import { FaPenAlt, FaTrash } from 'react-icons/fa'
-import moment from 'moment'
+import { FaCheckCircle, FaPenAlt, FaTimesCircle, FaTrash } from 'react-icons/fa'
 import apiHook from '../../api'
-import { IClientPermission } from '../../models/ClientPermission'
+import { ICustomer } from '../../models/Customer'
+import { currency } from '../../utils/currency'
 
-const ClientPermissions = () => {
+const Customers = () => {
   const [page, setPage] = useState(1)
   const [id, setId] = useState<any>(null)
   const [edit, setEdit] = useState(false)
   const [q, setQ] = useState('')
+
+  const getApi = apiHook({
+    key: ['customers'],
+    method: 'GET',
+    url: `setting/customers?page=${page}&q=${q}&limit=${25}`,
+  })?.get
+
+  const postApi = apiHook({
+    key: ['customers'],
+    method: 'POST',
+    url: `setting/customers`,
+  })?.post
+
+  const updateApi = apiHook({
+    key: ['customers'],
+    method: 'PUT',
+    url: `setting/customers`,
+  })?.put
+
+  const deleteApi = apiHook({
+    key: ['customers'],
+    method: 'DELETE',
+    url: `setting/customers`,
+  })?.deleteObj
 
   const {
     register,
@@ -37,36 +62,11 @@ const ClientPermissions = () => {
     formState: { errors },
   } = useForm({})
 
-  const getApi = apiHook({
-    key: ['client-permissions'],
-    method: 'GET',
-    url: `auth/client-permissions?page=${page}&q=${q}&limit=${25}`,
-  })?.get
-
-  const postApi = apiHook({
-    key: ['client-permissions'],
-    method: 'POST',
-    url: `auth/client-permissions`,
-  })?.post
-
-  const updateApi = apiHook({
-    key: ['client-permissions'],
-    method: 'PUT',
-    url: `auth/client-permissions`,
-  })?.put
-
-  const deleteApi = apiHook({
-    key: ['client-permissions'],
-    method: 'DELETE',
-    url: `auth/client-permissions`,
-  })?.deleteObj
-
   useEffect(() => {
-    if (postApi?.isSuccess || updateApi?.isSuccess || deleteApi?.isSuccess) {
+    if (postApi?.isSuccess || updateApi?.isSuccess || deleteApi?.isSuccess)
       formCleanHandler()
-      getApi?.refetch()
-      document.getElementById('dismissModal')?.click()
-    }
+    getApi?.refetch()
+    document.getElementById('dismissModal')?.click()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postApi?.isSuccess, updateApi?.isSuccess, deleteApi?.isSuccess])
 
@@ -86,13 +86,14 @@ const ClientPermissions = () => {
     setPage(1)
   }
 
-  const editHandler = (item: IClientPermission) => {
+  const editHandler = (item: ICustomer) => {
     setId(item._id)
     setValue('name', item?.name)
-    setValue('sort', item?.sort)
-    setValue('menu', item?.menu)
-    setValue('path', item?.path)
-    setValue('description', item?.description)
+    setValue('phone', item?.phone)
+    setValue('address', item?.address)
+    setValue('openingBalance', item?.openingBalance)
+    setValue('status', item?.status)
+
     setEdit(true)
   }
 
@@ -100,9 +101,9 @@ const ClientPermissions = () => {
     confirmAlert(Confirm(() => deleteApi?.mutateAsync(id)))
   }
 
-  const name = 'Client Permissions List'
-  const label = 'Client Permission'
-  const modal = 'clientPermission'
+  const name = 'Customers List'
+  const label = 'Customer'
+  const modal = 'customer'
 
   // FormView
   const formCleanHandler = () => {
@@ -110,7 +111,7 @@ const ClientPermissions = () => {
     setEdit(false)
   }
 
-  const submitHandler = (data: Omit<IClientPermission, '_id'>) => {
+  const submitHandler = (data: object) => {
     edit
       ? updateApi?.mutateAsync({
           _id: id,
@@ -120,50 +121,50 @@ const ClientPermissions = () => {
   }
 
   const form = [
-    <div key={0} className="col-lg-6 col-md-6 col-12">
+    <div key={0} className="col-md-6 col-12">
       {inputText({
         register,
         errors,
-        label: 'Name',
+        label: 'Contact Person',
         name: 'name',
-        placeholder: 'Name',
+        placeholder: 'Enter contact person name',
       } as DynamicFormProps)}
     </div>,
-    <div key={1} className="col-lg-6 col-md-6 col-12">
+    <div key={1} className="col-md-6 col-12">
+      {inputTel({
+        register,
+        errors,
+        label: 'Phone',
+        name: 'phone',
+        placeholder: 'Enter phone',
+      } as DynamicFormProps)}
+    </div>,
+    <div key={5} className="col-md-6 col-12">
       {inputText({
         register,
         errors,
-        label: 'Menu',
-        name: 'menu',
-        placeholder: 'Menu',
+        label: 'Address',
+        name: 'address',
+        placeholder: 'Enter address',
       } as DynamicFormProps)}
     </div>,
-    <div key={2} className="col-lg-6 col-md-6 col-12">
+    <div key={6} className="col-md-6 col-12">
       {inputNumber({
         register,
         errors,
-        label: 'Sort By',
-        name: 'sort',
-        placeholder: 'Sort by',
+        label: 'Opening Balance',
+        name: 'openingBalance',
+        placeholder: 'Enter opening balance',
       } as DynamicFormProps)}
     </div>,
-    <div key={3} className="col-lg-6 col-md-6 col-12">
-      {inputText({
+    <div key={7} className="col-md-6 col-12">
+      {staticInputSelect({
         register,
         errors,
-        label: 'Path',
-        name: 'path',
-        placeholder: 'Path',
-      } as DynamicFormProps)}
-    </div>,
-    <div key={4} className="col-12">
-      {inputTextArea({
-        register,
-        errors,
-        label: 'Description',
-        name: 'description',
-        placeholder: 'Description',
-        isRequired: false,
+        label: 'Status',
+        name: 'status',
+        placeholder: 'Select status',
+        data: [{ name: 'active' }, { name: 'disabled' }],
       } as DynamicFormProps)}
     </div>,
   ]
@@ -172,7 +173,7 @@ const ClientPermissions = () => {
 
   return (
     <>
-      <Meta title="Client Permissions" />
+      <Meta title="Customers" />
 
       {deleteApi?.isSuccess && (
         <Message
@@ -237,7 +238,7 @@ const ClientPermissions = () => {
             </button>
             <div className="col-auto">
               <Search
-                placeholder="Search by name"
+                placeholder="Search by customer name"
                 setQ={setQ}
                 q={q}
                 searchHandler={searchHandler}
@@ -247,24 +248,29 @@ const ClientPermissions = () => {
           <table className="table table-sm table-border">
             <thead className="border-0">
               <tr>
-                <th>Sort By</th>
-                <th>Name</th>
-                <th>Menu</th>
-                <th>Path</th>
-                <th>Description</th>
-                <th>DateTime</th>
+                <th>Contact Person</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Opening Balance</th>
+                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {getApi?.data?.data?.map((item: IClientPermission, i: number) => (
+              {getApi?.data?.data?.map((item: ICustomer, i: number) => (
                 <tr key={i}>
-                  <td>{item?.sort}</td>
                   <td>{item?.name}</td>
-                  <td>{item?.menu}</td>
-                  <td>{item?.path}</td>
-                  <td>{item?.description}</td>
-                  <td>{moment(item?.createdAt).format('lll')}</td>
+                  <td>{item?.phone}</td>
+                  <td>{item?.address}</td>
+                  <td>{currency(item?.openingBalance)}</td>
+                  <td>
+                    {item?.status === 'active' ? (
+                      <FaCheckCircle className="text-success" />
+                    ) : (
+                      <FaTimesCircle className="text-danger" />
+                    )}
+                  </td>
+
                   <td>
                     <div className="btn-group">
                       <button
@@ -301,6 +307,6 @@ const ClientPermissions = () => {
   )
 }
 
-export default dynamic(() => Promise.resolve(withAuth(ClientPermissions)), {
+export default dynamic(() => Promise.resolve(withAuth(Customers)), {
   ssr: false,
 })

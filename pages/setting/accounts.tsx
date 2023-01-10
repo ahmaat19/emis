@@ -13,21 +13,53 @@ import {
 } from '../../components'
 import {
   DynamicFormProps,
+  dynamicInputSelect,
   inputNumber,
   inputText,
   inputTextArea,
+  staticInputSelect,
 } from '../../utils/dForms'
 import FormView from '../../components/FormView'
-import { FaPenAlt, FaTrash } from 'react-icons/fa'
-import moment from 'moment'
+import { FaCheckCircle, FaPenAlt, FaTimesCircle, FaTrash } from 'react-icons/fa'
 import apiHook from '../../api'
-import { IClientPermission } from '../../models/ClientPermission'
+import { IAccount } from '../../models/Account'
+import { IAccountType } from '../../models/AccountType'
 
-const ClientPermissions = () => {
+const Accounts = () => {
   const [page, setPage] = useState(1)
   const [id, setId] = useState<any>(null)
   const [edit, setEdit] = useState(false)
   const [q, setQ] = useState('')
+
+  const getAccountTypeApi = apiHook({
+    key: ['account-types-api'],
+    method: 'GET',
+    url: `setting/account-types?page=${page}&q=${q}&limit=${100}`,
+  })?.get
+
+  const getApi = apiHook({
+    key: ['accounts'],
+    method: 'GET',
+    url: `setting/accounts?page=${page}&q=${q}&limit=${25}`,
+  })?.get
+
+  const postApi = apiHook({
+    key: ['accounts'],
+    method: 'POST',
+    url: `setting/accounts`,
+  })?.post
+
+  const updateApi = apiHook({
+    key: ['accounts'],
+    method: 'PUT',
+    url: `setting/accounts`,
+  })?.put
+
+  const deleteApi = apiHook({
+    key: ['accounts'],
+    method: 'DELETE',
+    url: `setting/accounts`,
+  })?.deleteObj
 
   const {
     register,
@@ -37,36 +69,11 @@ const ClientPermissions = () => {
     formState: { errors },
   } = useForm({})
 
-  const getApi = apiHook({
-    key: ['client-permissions'],
-    method: 'GET',
-    url: `auth/client-permissions?page=${page}&q=${q}&limit=${25}`,
-  })?.get
-
-  const postApi = apiHook({
-    key: ['client-permissions'],
-    method: 'POST',
-    url: `auth/client-permissions`,
-  })?.post
-
-  const updateApi = apiHook({
-    key: ['client-permissions'],
-    method: 'PUT',
-    url: `auth/client-permissions`,
-  })?.put
-
-  const deleteApi = apiHook({
-    key: ['client-permissions'],
-    method: 'DELETE',
-    url: `auth/client-permissions`,
-  })?.deleteObj
-
   useEffect(() => {
-    if (postApi?.isSuccess || updateApi?.isSuccess || deleteApi?.isSuccess) {
+    if (postApi?.isSuccess || updateApi?.isSuccess || deleteApi?.isSuccess)
       formCleanHandler()
-      getApi?.refetch()
-      document.getElementById('dismissModal')?.click()
-    }
+    getApi?.refetch()
+    document.getElementById('dismissModal')?.click()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postApi?.isSuccess, updateApi?.isSuccess, deleteApi?.isSuccess])
 
@@ -86,13 +93,15 @@ const ClientPermissions = () => {
     setPage(1)
   }
 
-  const editHandler = (item: IClientPermission) => {
+  const editHandler = (item: IAccount) => {
     setId(item._id)
+    setValue('accNo', item?.accNo)
     setValue('name', item?.name)
-    setValue('sort', item?.sort)
-    setValue('menu', item?.menu)
-    setValue('path', item?.path)
+    setValue('accountType', item?.accountType?._id)
+    setValue('openingBalance', item?.openingBalance)
     setValue('description', item?.description)
+    setValue('status', item?.status)
+
     setEdit(true)
   }
 
@@ -100,9 +109,9 @@ const ClientPermissions = () => {
     confirmAlert(Confirm(() => deleteApi?.mutateAsync(id)))
   }
 
-  const name = 'Client Permissions List'
-  const label = 'Client Permission'
-  const modal = 'clientPermission'
+  const name = 'Accounts List'
+  const label = 'Account'
+  const modal = 'account'
 
   // FormView
   const formCleanHandler = () => {
@@ -110,7 +119,7 @@ const ClientPermissions = () => {
     setEdit(false)
   }
 
-  const submitHandler = (data: Omit<IClientPermission, '_id'>) => {
+  const submitHandler = (data: object) => {
     edit
       ? updateApi?.mutateAsync({
           _id: id,
@@ -120,40 +129,44 @@ const ClientPermissions = () => {
   }
 
   const form = [
-    <div key={0} className="col-lg-6 col-md-6 col-12">
+    <div key={0} className="col-md-6 col-12">
+      {inputText({
+        register,
+        errors,
+        label: 'Account Number',
+        name: 'accNo',
+        placeholder: 'Enter account number',
+      } as DynamicFormProps)}
+    </div>,
+    <div key={1} className="col-md-6 col-12">
       {inputText({
         register,
         errors,
         label: 'Name',
         name: 'name',
-        placeholder: 'Name',
+        placeholder: 'Enter name',
       } as DynamicFormProps)}
     </div>,
-    <div key={1} className="col-lg-6 col-md-6 col-12">
-      {inputText({
+    <div key={2} className="col-md-6 col-12">
+      {dynamicInputSelect({
         register,
         errors,
-        label: 'Menu',
-        name: 'menu',
-        placeholder: 'Menu',
+        label: 'Account Type',
+        name: 'accountType',
+        placeholder: 'Select account type',
+        value: 'name',
+        data: getAccountTypeApi?.data?.data?.filter(
+          (acc: IAccountType) => acc?.status === 'active'
+        ),
       } as DynamicFormProps)}
     </div>,
-    <div key={2} className="col-lg-6 col-md-6 col-12">
+    <div key={3} className="col-md-6 col-12">
       {inputNumber({
         register,
         errors,
-        label: 'Sort By',
-        name: 'sort',
-        placeholder: 'Sort by',
-      } as DynamicFormProps)}
-    </div>,
-    <div key={3} className="col-lg-6 col-md-6 col-12">
-      {inputText({
-        register,
-        errors,
-        label: 'Path',
-        name: 'path',
-        placeholder: 'Path',
+        label: 'Opening Balance',
+        name: 'openingBalance',
+        placeholder: 'Enter opening balance',
       } as DynamicFormProps)}
     </div>,
     <div key={4} className="col-12">
@@ -162,8 +175,18 @@ const ClientPermissions = () => {
         errors,
         label: 'Description',
         name: 'description',
-        placeholder: 'Description',
+        placeholder: 'Enter description',
         isRequired: false,
+      } as DynamicFormProps)}
+    </div>,
+    <div key={5} className="col-md-6 col-12">
+      {staticInputSelect({
+        register,
+        errors,
+        label: 'Status',
+        name: 'status',
+        placeholder: 'Select status',
+        data: [{ name: 'active' }, { name: 'disabled' }],
       } as DynamicFormProps)}
     </div>,
   ]
@@ -172,7 +195,7 @@ const ClientPermissions = () => {
 
   return (
     <>
-      <Meta title="Client Permissions" />
+      <Meta title="Accounts" />
 
       {deleteApi?.isSuccess && (
         <Message
@@ -237,7 +260,7 @@ const ClientPermissions = () => {
             </button>
             <div className="col-auto">
               <Search
-                placeholder="Search by name"
+                placeholder="Search by account name"
                 setQ={setQ}
                 q={q}
                 searchHandler={searchHandler}
@@ -247,24 +270,31 @@ const ClientPermissions = () => {
           <table className="table table-sm table-border">
             <thead className="border-0">
               <tr>
-                <th>Sort By</th>
+                <th>Account No.</th>
                 <th>Name</th>
-                <th>Menu</th>
-                <th>Path</th>
-                <th>Description</th>
-                <th>DateTime</th>
+                <th>Account Type</th>
+                <th>Opening Balance</th>
+                <th>Current Balance</th>
+                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {getApi?.data?.data?.map((item: IClientPermission, i: number) => (
+              {getApi?.data?.data?.map((item: IAccount, i: number) => (
                 <tr key={i}>
-                  <td>{item?.sort}</td>
+                  <td>{item?.accNo}</td>
                   <td>{item?.name}</td>
-                  <td>{item?.menu}</td>
-                  <td>{item?.path}</td>
-                  <td>{item?.description}</td>
-                  <td>{moment(item?.createdAt).format('lll')}</td>
+                  <td>{item?.accountType?.name}</td>
+                  <td>${item?.openingBalance?.toFixed(2)}</td>
+                  <td>${999.99}</td>
+                  <td>
+                    {item?.status === 'active' ? (
+                      <FaCheckCircle className="text-success" />
+                    ) : (
+                      <FaTimesCircle className="text-danger" />
+                    )}
+                  </td>
+
                   <td>
                     <div className="btn-group">
                       <button
@@ -301,6 +331,6 @@ const ClientPermissions = () => {
   )
 }
 
-export default dynamic(() => Promise.resolve(withAuth(ClientPermissions)), {
+export default dynamic(() => Promise.resolve(withAuth(Accounts)), {
   ssr: false,
 })

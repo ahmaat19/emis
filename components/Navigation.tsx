@@ -87,7 +87,7 @@ const Navigation = ({ toggle }: { toggle: () => void }) => {
               )
           )} */}
 
-          <li className="nav-item dropdown profile-dropdown">
+          <li className="nav-item dropdown profile-dropdown dropstart profile-dropdown">
             <a
               className="nav-link dropdown-toggle"
               href="#"
@@ -102,9 +102,9 @@ const Navigation = ({ toggle }: { toggle: () => void }) => {
                 width={30}
                 height={30}
               />
-              {userInfo()?.userInfo?.name}
+              {/* {userInfo()?.userInfo?.name} */}
             </a>
-            <ul className="dropdown-menu border-0">
+            <ul className="dropdown-menu border-0 shadow-lg">
               <li>
                 <Link
                   href="/account/profile"

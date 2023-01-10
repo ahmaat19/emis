@@ -110,7 +110,10 @@ const SideBar = () => {
 
         {menus()?.uniqueDropdowns?.map(
           (item: IClientPermission, index: number) => (
-            <li key={index} className="nav-item dropdown">
+            <li
+              key={index}
+              className="nav-item dropdown dropstart profile-dropdown"
+            >
               <a
                 className="nav-link dropdown-toggle"
                 href="#"
@@ -122,7 +125,7 @@ const SideBar = () => {
                 {menuIcon(item?.menu)}
               </a>
               <ul
-                className="dropdown-menu border-0"
+                className="dropdown-menu border-0 shadow-lg sidebar-dropdown-menu"
                 aria-labelledby="navbarDropdownMenuLink"
               >
                 {menus() &&
@@ -146,7 +149,7 @@ const SideBar = () => {
 
   return (
     <div
-      className="bg-white  position-fixed h-100"
+      className="bg-white position-fixed h-100"
       style={{
         minWidth: 220,
         top: 55,

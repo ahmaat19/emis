@@ -43,6 +43,7 @@ const FormView = ({
             </h3>
             <button
               type="button"
+              id="dismissModal"
               className="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
